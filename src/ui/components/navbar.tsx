@@ -29,11 +29,6 @@ const Navbar: React.FC = () => {
                     <UserPlus size={18} className="icon" />
                     Register
                 </Link>
-
-                {/* Plus tard : image de profil si connecté */}
-                {/* <Link to="/profile">
-                    <img src="/profile.jpg" alt="Profile" className="profile-pic" />
-                </Link> */}
             </div>
         </nav>
     );
