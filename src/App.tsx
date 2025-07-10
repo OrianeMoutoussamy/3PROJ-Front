@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import MainLayout from './MainLayout';
 
 const App: React.FC = () => {

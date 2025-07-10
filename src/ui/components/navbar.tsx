@@ -1,14 +1,40 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { LogIn, UserPlus } from 'lucide-react';
+import './navbar.css';
 
 const Navbar: React.FC = () => {
     return (
-        <nav style={{ padding: '10px', backgroundColor: '#282c34', color: 'white' }}>
-        <ul style={{ listStyleType: 'none', display: 'flex' }}>
-            <li>
-            <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Homepage</Link>
-            </li>
-        </ul>
+        <nav className="navbar">
+            <div className="navbar-left">
+                <Link to="/">
+                    <img src="/freetube.png" alt="FreeTube Logo" className="logo" />
+                </Link>
+            </div>
+
+            <div className="navbar-center">
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    className="search-bar"
+                />
+            </div>
+
+            <div className="navbar-right">
+                <Link to="/login" className="nav-button">
+                    <LogIn size={18} className="icon" />
+                    Login
+                </Link>
+                <Link to="/register" className="nav-button">
+                    <UserPlus size={18} className="icon" />
+                    Register
+                </Link>
+
+                {/* Plus tard : image de profil si connecté */}
+                {/* <Link to="/profile">
+                    <img src="/profile.jpg" alt="Profile" className="profile-pic" />
+                </Link> */}
+            </div>
         </nav>
     );
 };
