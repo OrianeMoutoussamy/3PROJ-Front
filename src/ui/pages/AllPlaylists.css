@@ -1,0 +1,58 @@
+.all-playlists-container {
+  padding: 24px;
+  margin: 0 auto;
+}
+
+.all-playlists-title {
+  font-weight: 700;
+  font-size: 2rem;
+  color: #111827;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.all-playlists-separator {
+  border-color: #d1d5db;
+  margin: 16px 0 24px 0;
+}
+
+.all-playlists-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.playlist-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+.playlist-line:hover {
+  background-color: #f9fafb;
+}
+
+.playlist-name {
+  text-decoration: none;
+  color: #111827;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.playlist-delete-btn {
+  background-color: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.playlist-delete-btn:hover {
+  background-color: #fee2e2;
+}

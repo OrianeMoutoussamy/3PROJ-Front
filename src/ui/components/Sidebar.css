@@ -1,0 +1,134 @@
+.sidebar {
+    width: 250px;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    height: 100vh;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-section h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+}
+
+.sidebar-playlists ul,
+.sidebar-subscriptions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.playlist-item:hover {
+    background-color: #f3f4f6;
+}
+
+.sidebar-playlists button {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #2563eb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.sidebar-playlists button:hover {
+    text-decoration: underline;
+}
+
+.subscription-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #111827;
+    transition: background-color 0.2s ease;
+}
+
+.subscription-item:hover {
+    background-color: #f3f4f6;
+}
+
+.subscription-avatar {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #10b981;
+    flex-shrink: 0;
+}
+
+.subscription-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.sidebar-playlists button {
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2563eb;
+    background-color: transparent;
+    border: 2px solid #2563eb;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.sidebar-playlists button:hover {
+    background-color: #2563eb;
+    color: #ffffff;
+    border-color: #1d4ed8;
+}
+
+.btn-see-all-playlists {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  border-radius: 6px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  user-select: none;
+  border: none;
+}
+
+.btn-see-all-playlists:hover {
+  background-color: #1e40af;
+  text-decoration: none;
+  color: white;
+}

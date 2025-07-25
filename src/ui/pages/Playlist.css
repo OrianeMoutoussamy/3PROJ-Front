@@ -1,0 +1,49 @@
+.video-list-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.video-thumbnail {
+  width: 160px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.video-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #374151;
+}
+
+.video-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0;
+}
+
+.video-channel,
+.video-date {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #ef4444;
+  transition: color 0.3s ease;
+}
+
+.delete-button:hover {
+  color: #b91c1c;
+}
