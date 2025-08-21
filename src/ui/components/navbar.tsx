@@ -1,37 +1,55 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { LogIn, UserPlus } from 'lucide-react';
-import './navbar.css';
+import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
 
 const Navbar: React.FC = () => {
-    return (
-        <nav className="navbar">
-            <div className="navbar-left">
-                <Link to="/">
-                    <img src="/freetube.png" alt="FreeTube Logo" className="logo" />
-                </Link>
-            </div>
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-            <div className="navbar-center">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    className="search-bar"
-                />
-            </div>
+  // Fermer le menu si clic à l’extérieur
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-            <div className="navbar-right">
-                <Link to="/login" className="nav-button">
-                    <LogIn size={18} className="icon" />
-                    Login
-                </Link>
-                <Link to="/register" className="nav-button">
-                    <UserPlus size={18} className="icon" />
-                    Register
-                </Link>
-            </div>
-        </nav>
-    );
+  return (
+    <nav className="navbar">
+      <div className="navbar-left">
+        <Link to="/">
+          <img src="/freetube.png" alt="FreeTube Logo" className="logo" />
+        </Link>
+      </div>
+
+      <div className="navbar-center">
+        <input type="text" placeholder="Search..." className="search-bar" />
+      </div>
+
+      <div className="navbar-right" ref={menuRef}>
+        <div
+          className="profile-circle"
+          onClick={() => setMenuOpen((prev) => !prev)}
+        >
+          <span className="profile-initial">U</span> {/* remplacera par avatar */}
+        </div>
+
+        {menuOpen && (
+          <div className="profile-menu">
+            <p className="profile-name">MonPseudo</p>
+            <hr />
+            <Link to="/login" className="profile-item">Se connecter</Link>
+            <Link to="/register" className="profile-item">Créer un compte</Link>
+            <Link to="/settings" className="profile-item">Paramètres</Link>
+            <button className="profile-item logout">Se déconnecter</button>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
 };
 
 export default Navbar;

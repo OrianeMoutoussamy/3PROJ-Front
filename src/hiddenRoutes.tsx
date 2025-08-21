@@ -1,3 +1,3 @@
-const hiddenRoutes = ['/login', '/register'];
+const hiddenRoutes = ['/login', '/register', "/settings"];
 
 export default hiddenRoutes;

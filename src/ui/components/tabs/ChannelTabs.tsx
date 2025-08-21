@@ -1,71 +1,61 @@
+// src/components/tabs/ChannelTabs.tsx
 import React from 'react';
-import SectionTitle from '../texts/SectionTitle';
-import './ChannelTabs.css';
-
+import VideoCard from '../videos/VideoCard';
 
 interface Video {
-    title: string;
-    date: string;
+  videoId: string;
+  thumbnailUrl: string;
+  title: string;
+  channelName: string;
+  dateAdded: string;
 }
 
 interface Playlist {
-    title: string;
-    count: number;
+  title: string;
+  count: number;
 }
 
-interface ChannelTabsProps {
-    activeTab: 'main' | 'videos' | 'playlists';
-    videos: Video[];
-    playlists: Playlist[];
+interface Props {
+  activeTab: 'main' | 'videos' | 'playlists';
+  videos: Video[];
+  playlists: Playlist[];
 }
 
-const ChannelTabs: React.FC<ChannelTabsProps> = ({ activeTab, videos, playlists }) => {
-    if (activeTab === 'main') {
-        return (
-            <>
-                <SectionTitle title="Vidéos récentes" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {videos.slice(0, 3).map((_, index) => (
-                        <div key={index} className="aspect-video bg-gray-200 rounded shadow" />
-                    ))}
-                </div>
-            </>
-        );
-    }
+const ChannelTabs: React.FC<Props> = ({ activeTab, videos, playlists }) => {
+  if (activeTab === 'main') {
+    return (
+      <div className="p-4">
+        <h2 className="text-xl font-semibold mb-4">Bienvenue sur la page principale 🎉</h2>
+        <p className="text-gray-600">Ici, tu peux présenter ton channel.</p>
+      </div>
+    );
+  }
 
-    if (activeTab === 'videos') {
-        return (
-            <>
-                <SectionTitle title="Toutes les vidéos" />
-                <ul className="space-y-2">
-                    {videos.map((video, index) => (
-                        <li key={index} className="p-4 border rounded bg-white shadow-sm">
-                            <h3 className="font-medium">{video.title}</h3>
-                            <p className="text-sm text-gray-500">Publié le {video.date}</p>
-                        </li>
-                    ))}
-                </ul>
-            </>
-        );
-    }
+  if (activeTab === 'videos') {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+        {videos.map((video) => (
+          <VideoCard key={video.videoId} {...video} />
+        ))}
+      </div>
+    );
+  }
 
-    if (activeTab === 'playlists') {
-        return (
-            <>
-                <SectionTitle title="Playlists publiques" />
-                <ul className="space-y-2">
-                    {playlists.map((playlist, index) => (
-                        <li key={index} className="p-4 border rounded bg-white shadow-sm">
-                            <h3 className="font-medium">{playlist.title}</h3>
-                            <p className="text-sm text-gray-500">{playlist.count} vidéos</p>
-                        </li>
-                    ))}
-                </ul>
-            </>
-        );
-    }
+  if (activeTab === 'playlists') {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+        {playlists.map((pl, index) => (
+          <div key={index} className="bg-white shadow rounded-lg p-3">
+            <div className="h-32 bg-gray-200 mb-3 rounded"></div>
+            <h3 className="font-semibold">{pl.title}</h3>
+            <p className="text-sm text-gray-500">{pl.count} vidéos</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
-    return null;
+  return null;
 };
 
 export default ChannelTabs;

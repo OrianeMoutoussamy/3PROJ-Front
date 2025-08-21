@@ -1,17 +1,27 @@
+// src/ui/components/videos/VideoCard.tsx
 import React from 'react';
+import { Link } from 'react-router-dom';
+import './VideoCard.css';
 
 interface VideoCardProps {
-    thumbnailUrl: string;
-    channelName: string;
+  videoId: string;
+  thumbnailUrl: string;
+  title: string;
+  channelName: string;
+  dateAdded?: string;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ thumbnailUrl, channelName }) => (
-    <div className="w-full max-w-sm">
-        <div className="aspect-video bg-gray-300 rounded-lg overflow-hidden">
-        <img src={thumbnailUrl} alt="Thumbnail" className="w-full h-full object-cover" />
-        </div>
-        <p className="mt-2 text-sm text-gray-700 font-medium">{channelName}</p>
-    </div>
-);
+const VideoCard: React.FC<VideoCardProps> = ({ videoId, thumbnailUrl, title, channelName, dateAdded }) => {
+  return (
+    <Link to={`/channel/${channelName}/video/${videoId}`} className="video-card">
+      <img src={thumbnailUrl} alt={title} className="video-thumbnail" />
+      <div className="video-info">
+        <h3 className="video-title">{title}</h3>
+        <p className="video-channel">{channelName}</p>
+        {dateAdded && <p className="video-date">{new Date(dateAdded).toLocaleDateString()}</p>}
+      </div>
+    </Link>
+  );
+};
 
 export default VideoCard;

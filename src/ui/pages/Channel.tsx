@@ -7,11 +7,36 @@ const Channel: React.FC = () => {
   const { handle } = useParams<{ handle: string }>();
   const [activeTab, setActiveTab] = useState<'main' | 'videos' | 'playlists'>('main');
 
+  // Données fictives enrichies (compatibles avec VideoCard)
   const videos = [
-    { title: 'Ma première vidéo', date: '2025-07-01' },
-    { title: 'React pour les nuls', date: '2025-06-28' },
-    { title: 'Best of 2025', date: '2025-06-15' },
-    { title: 'Présentation du channel', date: '2025-06-01' },
+    { 
+      videoId: '1',
+      thumbnailUrl: 'https://via.placeholder.com/300x169?text=Video+1',
+      title: 'Ma première vidéo',
+      channelName: handle?.startsWith('@') ? handle.slice(1) : handle || 'Inconnu',
+      dateAdded: '2025-07-01',
+    },
+    { 
+      videoId: '2',
+      thumbnailUrl: 'https://via.placeholder.com/300x169?text=Video+2',
+      title: 'React pour les nuls',
+      channelName: handle?.startsWith('@') ? handle.slice(1) : handle || 'Inconnu',
+      dateAdded: '2025-06-28',
+    },
+    { 
+      videoId: '3',
+      thumbnailUrl: 'https://via.placeholder.com/300x169?text=Video+3',
+      title: 'Best of 2025',
+      channelName: handle?.startsWith('@') ? handle.slice(1) : handle || 'Inconnu',
+      dateAdded: '2025-06-15',
+    },
+    { 
+      videoId: '4',
+      thumbnailUrl: 'https://via.placeholder.com/300x169?text=Video+4',
+      title: 'Présentation du channel',
+      channelName: handle?.startsWith('@') ? handle.slice(1) : handle || 'Inconnu',
+      dateAdded: '2025-06-01',
+    },
   ];
 
   const playlists = [
@@ -40,6 +65,7 @@ const Channel: React.FC = () => {
         ))}
       </div>
 
+      {/* On passe maintenant des vidéos complètes */}
       <ChannelTabs activeTab={activeTab} videos={videos} playlists={playlists} />
     </div>
   );
