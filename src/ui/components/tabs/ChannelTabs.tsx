@@ -1,6 +1,7 @@
-// src/components/tabs/ChannelTabs.tsx
-import React from 'react';
-import VideoCard from '../videos/VideoCard';
+import React from "react";
+import { Link } from "react-router-dom";
+import VideoCardGrid from "../videos/VideoCardGrid";
+import "./ChannelTabs.css";
 
 interface Video {
   videoId: string;
@@ -8,6 +9,8 @@ interface Video {
   title: string;
   channelName: string;
   dateAdded: string;
+  channelId: string;
+  channelHandle: string;
 }
 
 interface Playlist {
@@ -16,41 +19,46 @@ interface Playlist {
 }
 
 interface Props {
-  activeTab: 'main' | 'videos' | 'playlists';
+  activeTab: "main" | "videos" | "playlists";
   videos: Video[];
   playlists: Playlist[];
 }
 
 const ChannelTabs: React.FC<Props> = ({ activeTab, videos, playlists }) => {
-  if (activeTab === 'main') {
+  if (activeTab === "main") {
     return (
-      <div className="p-4">
-        <h2 className="text-xl font-semibold mb-4">Bienvenue sur la page principale 🎉</h2>
-        <p className="text-gray-600">Ici, tu peux présenter ton channel.</p>
+      <div className="channel-main">
+        <h2 className="section-title">Bienvenue sur la page principale 🎉</h2>
+        <p>Ici, tu peux présenter ton channel.</p>
       </div>
     );
   }
 
-  if (activeTab === 'videos') {
+  if (activeTab === "videos") {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+      <div className="video-grid">
         {videos.map((video) => (
-          <VideoCard key={video.videoId} {...video} />
+          <VideoCardGrid key={video.videoId} {...video} />
         ))}
       </div>
     );
   }
 
-  if (activeTab === 'playlists') {
+  if (activeTab === "playlists") {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-        {playlists.map((pl, index) => (
-          <div key={index} className="bg-white shadow rounded-lg p-3">
-            <div className="h-32 bg-gray-200 mb-3 rounded"></div>
-            <h3 className="font-semibold">{pl.title}</h3>
-            <p className="text-sm text-gray-500">{pl.count} vidéos</p>
-          </div>
-        ))}
+      <div className="playlist-list">
+        {playlists.map((pl, index) => {
+          const playlistLink = `/playlist/${encodeURIComponent(pl.title.replace(/\s+/g, "-").toLowerCase())}`;
+          return (
+            <div key={index} className="playlist-item">
+              <Link to={playlistLink} className="playlist-name">
+                {pl.title}
+              </Link>
+              <span className="playlist-count">{pl.count} vidéos</span>
+              <button className="playlist-delete">Supprimer</button>
+            </div>
+          );
+        })}
       </div>
     );
   }

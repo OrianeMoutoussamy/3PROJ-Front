@@ -1,15 +1,34 @@
-import React from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./ChannelInfo.css";
 
-interface Props {
+interface ChannelInfoProps {
   channelName: string;
+  channelHandle?: string; // ex: "@DevEd"
+  avatarUrl?: string;
 }
 
-const ChannelInfo: React.FC<Props> = ({ channelName }) => {
+const ChannelInfo: React.FC<ChannelInfoProps> = ({
+  channelName,
+  channelHandle,
+  avatarUrl = "/default-avatar.png",
+}) => {
   return (
     <div className="channel-info">
-      <div className="channel-avatar"></div>
-      <span className="channel-name">{channelName}</span>
-      <button className="subscribe-btn">S'abonner</button>
+      <img
+        src={avatarUrl}
+        alt={channelName}
+        className="channel-avatar"
+      />
+      <div className="channel-details">
+        {channelHandle ? (
+          <Link to={`/channel/${channelHandle}`} className="channel-link">
+            {channelName}
+          </Link>
+        ) : (
+          <span>{channelName}</span>
+        )}
+      </div>
     </div>
   );
 };

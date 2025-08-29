@@ -15,6 +15,8 @@ const Channel: React.FC = () => {
       title: 'Ma première vidéo',
       channelName: handle?.startsWith('@') ? handle.slice(1) : handle || 'Inconnu',
       dateAdded: '2025-07-01',
+      channelId: "CodeBeats",
+      channelHandle: "@CodeBeats",
     },
     { 
       videoId: '2',
@@ -22,6 +24,8 @@ const Channel: React.FC = () => {
       title: 'React pour les nuls',
       channelName: handle?.startsWith('@') ? handle.slice(1) : handle || 'Inconnu',
       dateAdded: '2025-06-28',
+      channelId: "CodeBeats",
+    channelHandle: "@CodeBeats",
     },
     { 
       videoId: '3',
@@ -29,6 +33,8 @@ const Channel: React.FC = () => {
       title: 'Best of 2025',
       channelName: handle?.startsWith('@') ? handle.slice(1) : handle || 'Inconnu',
       dateAdded: '2025-06-15',
+      channelId: "CodeBeats",       
+    channelHandle: "@CodeBeats",
     },
     { 
       videoId: '4',
@@ -36,6 +42,8 @@ const Channel: React.FC = () => {
       title: 'Présentation du channel',
       channelName: handle?.startsWith('@') ? handle.slice(1) : handle || 'Inconnu',
       dateAdded: '2025-06-01',
+      channelId: "CodeBeats",       
+    channelHandle: "@CodeBeats",
     },
   ];
 

@@ -13,7 +13,11 @@ const VideoPage: React.FC = () => {
     <div className="video-page">
       <div className="video-main">
         <VideoPlayer videoId={videoId!} />
-        <ChannelInfo channelName={channelName!} />
+        <ChannelInfo
+          channelName={channelName!}
+          channelHandle={`@${channelName!}`}
+        />
+
         <VideoDescription
           title="Titre de la vidéo"
           description="Ceci est une description détaillée de la vidéo, avec des infos et peut-être des hashtags."

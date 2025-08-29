@@ -8,6 +8,7 @@ import Login from '../ui/pages/Login';
 import Register from '../ui/pages/Register';
 import VideoPage from '../ui/pages/VideoPage';
 import Settings from '../ui/pages/Settings';
+import SearchPage from '../ui/pages/SearchPage';
 
 const RoutesComponent: React.FC = () => {
     return (
@@ -15,6 +16,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/channel/:handle" element={<Channel />} />
             <Route path="/playlist/:playlistName" element={<Playlist />} />
