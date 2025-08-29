@@ -1,26 +1,14 @@
-// services/authService.ts
 import { apiClient } from "./apiClient";
-
-export interface AuthPayload {
-  username?: string;
-  password?: string;
-}
+import { LoginPayload, RegisterPayload } from "../models/auth/User";
+import { AuthResponse } from "../models/auth/AuthResponse";
 
 export const authService = {
-  register: (payload: AuthPayload) =>
-    apiClient("/v1/auth/register", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  register: (payload: RegisterPayload): Promise<AuthResponse> =>
+    apiClient.post<AuthResponse>("/v1/auth/register", payload),
 
-  login: (payload: AuthPayload) =>
-    apiClient("/v1/auth/login", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  login: (payload: LoginPayload): Promise<AuthResponse> =>
+    apiClient.post<AuthResponse>("/v1/auth/login", payload),
 
-  logout: () =>
-    apiClient("/v1/auth/logout", {
-      method: "POST",
-    }),
+  logout: (): Promise<void> =>
+    apiClient.post<void>("/v1/auth/logout"),
 };

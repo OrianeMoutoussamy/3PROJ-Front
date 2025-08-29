@@ -1,13 +1,6 @@
 import { apiClient } from "./apiClient";
 
 export const feedService = {
-  getHomepageFeed: () =>
-    apiClient("/v1/feed/home", {
-      method: "GET",
-    }),
-
-  getTrendingFeed: () =>
-    apiClient("/v1/feed/trending", {
-      method: "GET",
-    }),
+  getHomepageFeed: () => apiClient.get<void>("/v1/feed/home"),
+  getTrendingFeed: () => apiClient.get<void>("/v1/feed/trending"),
 };

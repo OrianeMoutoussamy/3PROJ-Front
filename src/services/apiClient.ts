@@ -1,20 +1,33 @@
-const BASE_URL = "http://localhost:8080";
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
-export async function apiClient<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
+export class ApiClient {
+  private client: AxiosInstance;
 
-  if (!res.ok) {
-    throw new Error(`Erreur API ${res.status} : ${res.statusText}`);
+  constructor(baseURL: string = "http://localhost:8080") {
+    this.client = axios.create({
+      baseURL,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
   }
 
-  return res.json() as Promise<T>;
+  get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return this.client.get<T>(url, config).then(res => res.data);
+  }
+
+  post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    return this.client.post<T>(url, data, config).then(res => res.data);
+  }
+
+  put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    return this.client.put<T>(url, data, config).then(res => res.data);
+  }
+
+  delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return this.client.delete<T>(url, config).then(res => res.data);
+  }
 }
+
+export const apiClient = new ApiClient();
