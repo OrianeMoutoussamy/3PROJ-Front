@@ -1,4 +1,3 @@
-// models/playlist.ts
 import { Channel } from "../channels/Channel";
 
 export interface Playlist {

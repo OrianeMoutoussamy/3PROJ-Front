@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { authService } from "../../services/authService";
 import "./Navbar.css";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
-  // Fermer le menu si clic à l’extérieur
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -16,6 +17,18 @@ const Navbar: React.FC = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      console.log("✅ Déconnecté avec succès");
+      alert("Vous avez été déconnecté.");
+      navigate("/login");
+    } catch (err) {
+      console.error("❌ Erreur lors de la déconnexion:", err);
+      alert("Erreur lors de la déconnexion");
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -34,7 +47,7 @@ const Navbar: React.FC = () => {
           className="profile-circle"
           onClick={() => setMenuOpen((prev) => !prev)}
         >
-          <span className="profile-initial">U</span> {/* remplacera par avatar */}
+          <span className="profile-initial">U</span>
         </div>
 
         {menuOpen && (
@@ -44,7 +57,9 @@ const Navbar: React.FC = () => {
             <Link to="/login" className="profile-item">Se connecter</Link>
             <Link to="/register" className="profile-item">Créer un compte</Link>
             <Link to="/settings" className="profile-item">Paramètres</Link>
-            <button className="profile-item logout">Se déconnecter</button>
+            <button onClick={handleLogout} className="profile-item logout">
+              Se déconnecter
+            </button>
           </div>
         )}
       </div>

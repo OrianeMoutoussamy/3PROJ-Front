@@ -1,69 +1,45 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import VideoCardGrid from "../videos/VideoCardGrid";
 import "./ChannelTabs.css";
 
-interface Video {
-  videoId: string;
-  thumbnailUrl: string;
-  title: string;
-  channelName: string;
-  dateAdded: string;
-  channelId: string;
-  channelHandle: string;
-}
-
-interface Playlist {
-  title: string;
-  count: number;
-}
-
-interface Props {
+interface ChannelTabsProps {
   activeTab: "main" | "videos" | "playlists";
-  videos: Video[];
-  playlists: Playlist[];
+  videos: any[];
+  playlists?: any[];
 }
 
-const ChannelTabs: React.FC<Props> = ({ activeTab, videos, playlists }) => {
-  if (activeTab === "main") {
-    return (
-      <div className="channel-main">
-        <h2 className="section-title">Bienvenue sur la page principale 🎉</h2>
-        <p>Ici, tu peux présenter ton channel.</p>
-      </div>
-    );
-  }
+const ChannelTabs: React.FC<ChannelTabsProps> = ({ activeTab, videos, playlists }) => {
+  return (
+    <div className="tab-content">
+      {activeTab === "main" && (
+        <div>
+          <h3>À propos</h3>
+          <p>Description fictive de la chaîne.</p>
+        </div>
+      )}
 
-  if (activeTab === "videos") {
-    return (
-      <div className="video-grid">
-        {videos.map((video) => (
-          <VideoCardGrid key={video.videoId} {...video} />
-        ))}
-      </div>
-    );
-  }
-
-  if (activeTab === "playlists") {
-    return (
-      <div className="playlist-list">
-        {playlists.map((pl, index) => {
-          const playlistLink = `/playlist/${encodeURIComponent(pl.title.replace(/\s+/g, "-").toLowerCase())}`;
-          return (
-            <div key={index} className="playlist-item">
-              <Link to={playlistLink} className="playlist-name">
-                {pl.title}
-              </Link>
-              <span className="playlist-count">{pl.count} vidéos</span>
-              <button className="playlist-delete">Supprimer</button>
+      {activeTab === "videos" && (
+        <div className="videos-grid">
+          {videos.map((video) => (
+            <div key={video.videoId} className="video-card">
+              <img src={video.thumbnailUrl} alt={video.title} />
+              <h4>{video.title}</h4>
+              <p>{video.channelName}</p>
             </div>
-          );
-        })}
-      </div>
-    );
-  }
+          ))}
+        </div>
+      )}
 
-  return null;
+      {activeTab === "playlists" && playlists && (
+        <ul>
+          {playlists.map((pl, index) => (
+            <li key={index}>
+              {pl.title} ({pl.count} vidéos)
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
 export default ChannelTabs;

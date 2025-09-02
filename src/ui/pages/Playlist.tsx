@@ -1,63 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import PlaylistVideoItem from "../components/videos/PlaylistVideoItem";
+import { playlistService } from "../../services/playlistService";
 import "./Playlist.css";
 
-interface Video {
-  videoId: string;
-  thumbnailUrl: string;
-  title: string;
-  channelName: string;
-  dateAdded: string;
-}
-
-const playlistsVideos: Record<string, Video[]> = {
-  "lofi-chill": [
-    {
-      videoId: "1",
-      thumbnailUrl: "https://picsum.photos/id/1011/120/68",
-      title: "Chill beats pour travailler",
-      channelName: "LoFiBeats",
-      dateAdded: "2025-07-10",
-    },
-    {
-      videoId: "2",
-      thumbnailUrl: "https://picsum.photos/id/1012/120/68",
-      title: "Evening Jazz Mix",
-      channelName: "SmoothJazz",
-      dateAdded: "2025-07-09",
-    },
-  ],
-};
-
 const Playlist: React.FC = () => {
-  const { playlistName } = useParams<{ playlistName: string }>();
-  const cleanName = playlistName ? playlistName.toLowerCase() : "";
-  const displayName = playlistName ? playlistName.replace(/-/g, " ") : "";
+  const { id } = useParams<{ id: string }>();
+  const [playlist, setPlaylist] = useState<any | null>(null);
 
-  const [videos, setVideos] = useState<Video[]>(playlistsVideos[cleanName] || []);
+  useEffect(() => {
+  if (id) {
+    playlistService.getPlaylistById(Number(id)).then((data) => {
+      setPlaylist(data);
+    });
+  }
+}, [id]);
 
-  const handleDelete = (id: string) => {
-    setVideos((prev) => prev.filter((v) => v.videoId !== id));
-  };
+
+  if (!playlist) {
+    return <p>Chargement de la playlist...</p>;
+  }
 
   return (
-    <div className="playlist-container">
-      <h1 className="playlist-title">{displayName}</h1>
-
-      {videos.length === 0 ? (
-        <p>Aucune vidéo dans cette playlist.</p>
-      ) : (
-        <div className="playlist-list">
-          {videos.map((video) => (
-            <PlaylistVideoItem
-              key={video.videoId}
-              {...video}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
-      )}
+    <div className="playlist-page">
+      <h2>{playlist.name}</h2>
+      <p>Créée le : {new Date(playlist.createdAt!).toLocaleDateString()}</p>
+      <ul className="video-list">
+        {playlist.videos?.map((video: any) => (
+          <li key={video.id} className="video-item">
+            <span>{video.title}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

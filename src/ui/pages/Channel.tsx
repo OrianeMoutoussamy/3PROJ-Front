@@ -47,11 +47,6 @@ const Channel: React.FC = () => {
     },
   ];
 
-  const playlists = [
-    { title: 'Série React', count: 8 },
-    { title: 'Gaming 2025', count: 5 },
-  ];
-
   return (
     <div className="channel-container">
       <header className="channel-header">
@@ -72,9 +67,7 @@ const Channel: React.FC = () => {
           </button>
         ))}
       </div>
-
-      {/* On passe maintenant des vidéos complètes */}
-      <ChannelTabs activeTab={activeTab} videos={videos} playlists={playlists} />
+      <ChannelTabs activeTab={activeTab} videos={videos}/>
     </div>
   );
 };
