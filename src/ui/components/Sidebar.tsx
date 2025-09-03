@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { playlistService } from "../../services/playlistService";
+import { channelServiceMock as channelService } from "../../services/channelService";
 import "./Sidebar.css";
 
 const Sidebar: React.FC = () => {
   const [playlists, setPlaylists] = useState<any[]>([]);
+  const [subscribedChannels, setSubscribedChannels] = useState<any[]>([]);
 
   useEffect(() => {
     playlistService.getSelfPlaylists().then((data) => {
@@ -13,9 +15,11 @@ const Sidebar: React.FC = () => {
       );
       setPlaylists(sorted.slice(0, 5));
     });
-  }, []);
 
-  const subscribedChannels = ["DevEd", "Fireship", "Traversy Media"];
+    channelService.getSubscribedChannels().then((channels) => {
+      setSubscribedChannels(channels);
+    });
+  }, []);
 
   return (
     <aside className="sidebar">
@@ -24,10 +28,7 @@ const Sidebar: React.FC = () => {
         <ul>
           {playlists.map((playlist) => (
             <li key={playlist.id}>
-              <Link
-                to={`/playlist/${playlist.id}`}
-                className="playlist-item"
-              >
+              <Link to={`/playlist/${playlist.id}`} className="playlist-item">
                 {playlist.name}
               </Link>
             </li>
@@ -43,14 +44,24 @@ const Sidebar: React.FC = () => {
 
       <div className="sidebar-section sidebar-subscriptions">
         <h3>Abonnements</h3>
-        {subscribedChannels.map((channel, index) => (
+        {subscribedChannels.map((channel) => (
           <Link
-            key={index}
-            to={`/channel/@${channel.replace(/\s+/g, "")}`}
+            key={channel.id}
+            to={`/channel/@${channel.username}`}
             className="subscription-item"
           >
-            <div className="subscription-avatar"></div>
-            <span className="subscription-name">{channel}</span>
+            <div className="subscription-avatar">
+              {channel.profilePicture ? (
+                <img
+                  src={channel.profilePicture}
+                  alt={channel.username}
+                  className="w-8 h-8 rounded-full"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gray-400" />
+              )}
+            </div>
+            <span className="subscription-name">{channel.username}</span>
           </Link>
         ))}
       </div>

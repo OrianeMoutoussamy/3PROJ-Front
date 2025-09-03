@@ -1,5 +1,6 @@
 import React from "react";
 import "./ChannelTabs.css";
+import VideoCardGrid from "../videos/VideoCardGrid";
 
 interface ChannelTabsProps {
   activeTab: "main" | "videos" | "playlists";
@@ -20,11 +21,16 @@ const ChannelTabs: React.FC<ChannelTabsProps> = ({ activeTab, videos, playlists 
       {activeTab === "videos" && (
         <div className="videos-grid">
           {videos.map((video) => (
-            <div key={video.videoId} className="video-card">
-              <img src={video.thumbnailUrl} alt={video.title} />
-              <h4>{video.title}</h4>
-              <p>{video.channelName}</p>
-            </div>
+            <VideoCardGrid
+              key={video.videoId}
+              videoId={video.videoId}
+              thumbnailUrl={video.thumbnailUrl}
+              title={video.title}
+              channelName={video.channelName}
+              dateAdded={video.dateAdded}
+              channelId={video.channelId}
+              channelHandle={video.channelHandle}
+            />
           ))}
         </div>
       )}
