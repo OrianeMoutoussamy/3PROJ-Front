@@ -3,12 +3,11 @@ import "./ChannelTabs.css";
 import VideoCardGrid from "../videos/VideoCardGrid";
 
 interface ChannelTabsProps {
-  activeTab: "main" | "videos" | "playlists";
+  activeTab: "main" | "videos";
   videos: any[];
-  playlists?: any[];
 }
 
-const ChannelTabs: React.FC<ChannelTabsProps> = ({ activeTab, videos, playlists }) => {
+const ChannelTabs: React.FC<ChannelTabsProps> = ({ activeTab, videos }) => {
   return (
     <div className="tab-content">
       {activeTab === "main" && (
@@ -21,28 +20,9 @@ const ChannelTabs: React.FC<ChannelTabsProps> = ({ activeTab, videos, playlists 
       {activeTab === "videos" && (
         <div className="videos-grid">
           {videos.map((video) => (
-            <VideoCardGrid
-              key={video.videoId}
-              videoId={video.videoId}
-              thumbnailUrl={video.thumbnailUrl}
-              title={video.title}
-              channelName={video.channelName}
-              dateAdded={video.dateAdded}
-              channelId={video.channelId}
-              channelHandle={video.channelHandle}
-            />
+            <VideoCardGrid key={video.id} video={video} />
           ))}
         </div>
-      )}
-
-      {activeTab === "playlists" && playlists && (
-        <ul>
-          {playlists.map((pl, index) => (
-            <li key={index}>
-              {pl.title} ({pl.count} vidéos)
-            </li>
-          ))}
-        </ul>
       )}
     </div>
   );

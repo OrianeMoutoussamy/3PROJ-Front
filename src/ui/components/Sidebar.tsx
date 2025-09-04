@@ -45,11 +45,7 @@ const Sidebar: React.FC = () => {
       <div className="sidebar-section sidebar-subscriptions">
         <h3>Abonnements</h3>
         {subscribedChannels.map((channel) => (
-          <Link
-            key={channel.id}
-            to={`/channel/@${channel.username}`}
-            className="subscription-item"
-          >
+          <Link to={`/channel/${channel.username}`} className="subscription-item">
             <div className="subscription-avatar">
               {channel.profilePicture ? (
                 <img

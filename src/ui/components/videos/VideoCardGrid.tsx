@@ -3,59 +3,44 @@ import { Link } from "react-router-dom";
 import "./VideoCardGrid.css";
 
 interface VideoCardGridProps {
-  videoId: string;
-  thumbnailUrl: string;
-  title: string;
-  channelName: string;
-  dateAdded: string;
-  channelId: string; // pour l'URL vidéo
-  channelHandle: string; // pour l'URL du channel
+  video: any; // juste l'objet renvoyé par le service
 }
 
-const VideoCardGrid: React.FC<VideoCardGridProps> = ({
-  videoId,
-  thumbnailUrl,
-  title,
-  channelName,
-  dateAdded,
-  channelId,
-  channelHandle,
-}) => {
+const VideoCardGrid: React.FC<VideoCardGridProps> = ({ video }) => {
+  const channel = video.channel;
+
   return (
     <div className="video-card-grid w-full">
-      {/* Thumbnail */}
-      <Link to={`/channel/${channelId}/video/${videoId}`}>
+      <Link to={`/channel/${channel.username}/video/${video.id}`}>
         <img
-          src={thumbnailUrl}
-          alt={title}
+          src={video.thumbnail || "/default-thumbnail.png"}
+          alt={video.title}
           className="thumbnail rounded-lg w-full cursor-pointer"
         />
       </Link>
 
-      {/* Infos */}
       <div className="video-info flex mt-2">
         <img
-          src="/default-avatar.png"
-          alt={channelName}
+          src={channel.profilePicture || "/default-avatar.png"}
+          alt={channel.username}
           className="channel-avatar w-10 h-10 rounded-full mr-3"
         />
         <div className="video-texts">
-          {/* Titre de la vidéo */}
           <Link
-            to={`/channel/${channelId}/video/${videoId}`}
+            to={`/channel/${channel.username}/video/${video.id}`}
             className="video-title font-semibold text-sm cursor-pointer"
           >
-            {title}
+            {video.title}
           </Link>
-          {/* Nom du channel */}
+
           <p className="video-meta text-gray-500 text-xs">
             <Link
-              to={`/channel/${channelHandle}`}
+              to={`/channel/${channel.username}`}
               className="hover:underline cursor-pointer"
             >
-              {channelName}
+              {channel.username}
             </Link>{" "}
-            • {dateAdded}
+            • {video.createdAt ? new Date(video.createdAt).toLocaleDateString() : "Date inconnue"}
           </p>
         </div>
       </div>

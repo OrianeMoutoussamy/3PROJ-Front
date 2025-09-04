@@ -18,7 +18,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/channel/:handle" element={<Channel />} />
+            <Route path="/channel/:username" element={<Channel />} />
             <Route path="/playlist/:playlistName" element={<Playlist />} />
             <Route path="/playlists" element={<AllPlaylists />} />
             <Route path="/channel/:channelName/video/:videoId" element={<VideoPage />} /> 

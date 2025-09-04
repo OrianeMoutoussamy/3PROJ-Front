@@ -1,5 +1,6 @@
-// import { apiClient } from "./apiClient";
+// services/channelService.ts
 import { Channel } from "../models/channels/Channel";
+// import { apiClient } from "./apiClient";
 
 // export const channelService = {
 //   getSelf: () => apiClient.get<Channel>("/v1/channel"),
@@ -11,6 +12,7 @@ import { Channel } from "../models/channels/Channel";
 //   unsubscribe: (id: string | number) => apiClient.delete<void>(`/v1/channel/u/${id}`),
 // };
 
+// MOCK
 const mockChannels: Channel[] = [
   {
     id: 1,
@@ -36,6 +38,8 @@ export const channelServiceMock = {
   getSelf: async () => mockChannels[0],
   getById: async (id: string | number) =>
     mockChannels.find((ch) => ch.id === Number(id)) || null,
+  getByUsername: async (username: string) =>
+    mockChannels.find((ch) => ch.username === username) || null, // <<< ici pour résoudre username -> id
   getSubscribedChannels: async () => mockChannels,
   updateChannel: async (body: Partial<Channel>) => ({
     ...mockChannels[0],

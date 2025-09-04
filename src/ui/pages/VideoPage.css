@@ -185,8 +185,16 @@
 }
 
 .comment-item {
+  display: flex;
+  justify-content: space-between; /* texte à gauche, bouton à droite */
+  align-items: flex-start;        /* aligne le bouton sur le haut du texte */
   padding: 10px 0;
   border-bottom: 1px solid #e5e7eb;
+  gap: 8px;
+}
+
+.comment-content {
+  flex: 1; /* prend tout l'espace disponible sauf le bouton */
 }
 
 .comment-item p {
@@ -194,11 +202,11 @@
 }
 
 .comment-item small {
-  display: block;
   color: #6b7280;
   font-size: 0.8rem;
   margin-top: 4px;
 }
+
 
 /* Vidéos liées (sidebar) */
 .video-related {

@@ -5,24 +5,27 @@ import { channelServiceMock as channelService } from "../../services/channelServ
 import "./Channel.css";
 
 const Channel: React.FC = () => {
-  const { handle } = useParams<{ handle: string }>();
-  const [activeTab, setActiveTab] = useState<"main" | "videos" | "playlists">("main");
+  const { username } = useParams<{ username: string }>();
+  const [activeTab, setActiveTab] = useState<"main" | "videos">("main");
   const [channel, setChannel] = useState<any>(null);
   const [selfChannel, setSelfChannel] = useState<any>(null);
   const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
-    if (!handle) return;
-    const cleanHandle = handle.startsWith("@") ? handle.slice(1) : handle;
+    if (!username) return;
 
-    channelService.getById(cleanHandle).then((data) => {
+    const fetchChannel = async () => {
+      // Résolution username -> channel object (avec id)
+      const data = await channelService.getByUsername(username);
       if (data) setChannel(data);
-    });
+    };
+
+    fetchChannel();
 
     channelService.getSelf().then((me) => {
       setSelfChannel(me);
     });
-  }, [handle]);
+  }, [username]);
 
   const toggleSubscribe = async () => {
     if (!channel) return;
@@ -35,26 +38,24 @@ const Channel: React.FC = () => {
     }
   };
 
-  const videos = [
-    {
-      videoId: "1",
-      thumbnailUrl: "https://via.placeholder.com/300x169?text=Video+1",
-      title: "Ma première vidéo",
-      channelName: channel?.username || "Inconnu",
-      dateAdded: "2025-07-01",
-      channelId: channel?.id,
-      channelHandle: `@${channel?.username}`,
-    },
-    {
-      videoId: "2",
-      thumbnailUrl: "https://via.placeholder.com/300x169?text=Video+2",
-      title: "React pour les nuls",
-      channelName: channel?.username || "Inconnu",
-      dateAdded: "2025-06-28",
-      channelId: channel?.id,
-      channelHandle: `@${channel?.username}`,
-    },
-  ];
+  const videos = channel
+    ? [
+        {
+          id: 1,
+          thumbnail: "https://via.placeholder.com/300x169?text=Video+1",
+          title: "Ma première vidéo",
+          channel,
+          createdAt: "2025-07-01",
+        },
+        {
+          id: 2,
+          thumbnail: "https://via.placeholder.com/300x169?text=Video+2",
+          title: "React pour les nuls",
+          channel,
+          createdAt: "2025-06-28",
+        },
+      ]
+    : [];
 
   const isMyChannel = selfChannel && channel && selfChannel.id === channel.id;
 
@@ -85,14 +86,14 @@ const Channel: React.FC = () => {
       </header>
 
       <div className="channel-tabs">
-        {["main", "videos", "playlists"].map((tab) => (
+        {["main", "videos"].map((tab) => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab as any)}
+            onClick={() => setActiveTab(tab as "main" | "videos")}
             className={activeTab === tab ? "active" : ""}
             type="button"
           >
-            {tab === "main" ? "Main" : tab === "videos" ? "Vidéos" : "Playlists"}
+            {tab === "main" ? "Main" : "Vidéos"}
           </button>
         ))}
       </div>

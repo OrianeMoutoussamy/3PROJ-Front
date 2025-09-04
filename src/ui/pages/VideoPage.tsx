@@ -5,65 +5,96 @@ import ChannelInfo from "../components/texts/ChannelInfo";
 import VideoDescription from "../components/videos/VideoDescription";
 import RelatedVideos from "../components/videos/RelatedVideos";
 import { playlistService } from "../../services/playlistService";
+import { videoServiceMock } from "../../services/videoService";
+import { Comment } from "../../models/videos/Comment";
 import "./VideoPage.css";
 
 interface Playlist {
-  id: string;
-  title: string;
+  id: number;
+  name: string;
 }
 
 const VideoPage: React.FC = () => {
   const { channelName, videoId } = useParams<{ channelName: string; videoId: string }>();
-
+  const [video, setVideo] = useState<any>(null);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
-  const [comments, setComments] = useState<{ id: number; text: string; date: string }[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
-    playlistService.getSelfPlaylists().then((data: any) => {
-      setPlaylists(data);
+    if (!videoId) return;
+
+    // Récupère la vidéo
+    videoServiceMock.getById(videoId).then((v) => {
+      setVideo(v);
     });
-  }, []);
 
-  const handleAddToPlaylist = async (playlistId: string) => {
-  if (!videoId) return;
-  await playlistService.addVideoToPlaylist(
-    Number(playlistId),
-    Number(videoId)
-  );
-  setDropdownOpen(false);
-  alert("Vidéo ajoutée à la playlist !");
-};
+    // Récupère les commentaires
+    videoServiceMock.getComments(videoId).then((c) => setComments(c));
 
+    // Récupère les réactions
+    videoServiceMock.getReactions(videoId).then((r) => {
+      setLikes(r.likes);
+      setDislikes(r.dislikes);
+    });
 
-  const handleLike = () => setLikes((l) => l + 1);
-  const handleDislike = () => setDislikes((d) => d + 1);
+    // Récupère les playlists de l'utilisateur
+    playlistService.getSelfPlaylists().then((pls: any) => setPlaylists(pls));
+  }, [videoId]);
 
-  const handleAddComment = (text: string) => {
-    const newComment = {
-      id: comments.length + 1,
-      text,
-      date: new Date().toISOString(),
-    };
-    setComments([newComment, ...comments]);
+  const handleAddToPlaylist = async (playlistId: number) => {
+    if (!video) return;
+    await playlistService.addVideoToPlaylist(playlistId, video.id);
+    setDropdownOpen(false);
+    alert("Vidéo ajoutée à la playlist !");
   };
+
+  const handleLike = async () => {
+    if (!video) return;
+    await videoServiceMock.reactVideo(video.id, 1);
+    setLikes((l) => l + 1);
+  };
+
+  const handleDislike = async () => {
+    if (!video) return;
+    await videoServiceMock.reactVideo(video.id, -1);
+    setDislikes((d) => d + 1);
+  };
+
+  const handleAddComment = async (text: string) => {
+    if (!video) return;
+    const newComment = await videoServiceMock.commentVideo(video.id, text);
+    setComments((prev) => [newComment, ...prev]);
+  };
+
+  const handleDeleteComment = async (commentId: number) => {
+    if (!video) return;
+    await videoServiceMock.deleteComment(video.id, commentId);
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
+  };
+
+  if (!video) return <div>Chargement...</div>;
 
   return (
     <div className="video-page">
       <div className="video-main">
         <div className="video-wrapper">
-          <VideoPlayer videoId={videoId!} />
+          <VideoPlayer videoId={video.id.toString()} />
         </div>
 
         <ChannelInfo
-          channelName={channelName!}
-          channelHandle={`@${channelName!}`}
+          channelName={video.channel.username}
+          channelHandle={video.channel.username}
+          avatarUrl={video.channel.profilePicture}
         />
 
         <div className="video-actions">
-          <button className="add-playlist-btn" onClick={() => setDropdownOpen((prev) => !prev)}>
+          <button
+            className="add-playlist-btn"
+            onClick={() => setDropdownOpen((prev) => !prev)}
+          >
             ➕ Ajouter à une playlist
           </button>
           {dropdownOpen && (
@@ -74,20 +105,24 @@ const VideoPage: React.FC = () => {
                   onClick={() => handleAddToPlaylist(pl.id)}
                   className="playlist-option"
                 >
-                  {pl.title}
+                  {pl.name}
                 </button>
               ))}
             </div>
           )}
 
-          <button onClick={handleLike} className="reaction-btn">👍 {likes}</button>
-          <button onClick={handleDislike} className="reaction-btn">👎 {dislikes}</button>
+          <button onClick={handleLike} className="reaction-btn">
+            👍 {likes}
+          </button>
+          <button onClick={handleDislike} className="reaction-btn">
+            👎 {dislikes}
+          </button>
         </div>
 
         <VideoDescription
-          title="Titre de la vidéo"
-          description="Ceci est une description détaillée de la vidéo, avec des infos et peut-être des hashtags."
-          date="2025-08-12"
+          title={video.title}
+          description={video.description || ""}
+          date={video.createdAt || ""}
         />
 
         <div className="comments-section">
@@ -95,7 +130,9 @@ const VideoPage: React.FC = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              const input = (e.currentTarget.elements.namedItem("comment") as HTMLInputElement);
+              const input = e.currentTarget.elements.namedItem(
+                "comment"
+              ) as HTMLInputElement;
               if (input.value.trim()) {
                 handleAddComment(input.value);
                 input.value = "";
@@ -109,8 +146,11 @@ const VideoPage: React.FC = () => {
           <ul className="comment-list">
             {comments.map((c) => (
               <li key={c.id} className="comment-item">
-                <p>{c.text}</p>
-                <small>{new Date(c.date).toLocaleString()}</small>
+                <p>
+                  <strong>{c.channel?.username || "Inconnu"}:</strong> {c.content}
+                </p>
+                <small>{new Date(c.createdAt || "").toLocaleString()}</small>
+                <button onClick={() => handleDeleteComment(c.id)}>Supprimer</button>
               </li>
             ))}
           </ul>
