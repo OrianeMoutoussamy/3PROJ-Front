@@ -1,30 +1,36 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
+import Toast from "../components/common/Toast";
+import { Eye, EyeOff } from "lucide-react";
 import "./Auth.css";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await authService.login({ email, password });
-      console.log("✅ Login success:", res);
-      alert("Connexion réussie !");
-    } catch (err) {
-      console.error("❌ Login failed:", err);
-      alert("Erreur lors de la connexion");
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const res = await authService.login({ email, password });
+    localStorage.setItem("authToken", res.token);
+    setToast({ message: "Connexion réussie !", type: "success" });
+    setTimeout(() => navigate("/"), 1000);
+  } catch {
+    setToast({ message: "Erreur lors de la connexion", type: "error" });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleGoogleLogin = () => {
-    console.log("Google Login");
+    setToast({ message: "Login Google non implémenté", type: "error" });
   };
 
   return (
@@ -39,27 +45,49 @@ const Login: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+
+        <div className="password-wrapper">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Mot de passe"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <span
+            className="password-eye"
+            onMouseDown={() => setShowPassword(true)}
+            onMouseUp={() => setShowPassword(false)}
+            onMouseLeave={() => setShowPassword(false)}
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </span>
+        </div>
+
         <button type="submit" className="auth-btn" disabled={loading}>
           {loading ? "Connexion..." : "Se connecter"}
         </button>
       </form>
+
       <div className="divider">OU</div>
       <button onClick={handleGoogleLogin} className="google-btn">
         Continuer avec Google
       </button>
+
       <p className="auth-switch">
         Pas encore inscrit ?{" "}
         <Link to="/register" className="auth-link">
           Créez un compte
         </Link>
       </p>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 };

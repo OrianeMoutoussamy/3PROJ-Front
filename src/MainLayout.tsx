@@ -9,16 +9,18 @@ const MainLayout: React.FC = () => {
     const location = useLocation();
     const shouldDisplayLayout = !hiddenRoutes.includes(location.pathname);
 
+    const isAuthenticated = !!localStorage.getItem("authToken");
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-        {shouldDisplayLayout && <Navbar />}
+            {shouldDisplayLayout && <Navbar />}
 
-        <div style={{ display: 'flex', flex: 1 }}>
-            {shouldDisplayLayout && <Sidebar />}
-            <div style={{ flex: 1, overflowY: 'auto' }}>
-            <RoutesComponent />
+            <div style={{ display: 'flex', flex: 1 }}>
+                {shouldDisplayLayout && isAuthenticated && <Sidebar />}
+                <div style={{ flex: 1, overflowY: 'auto' }}>
+                    <RoutesComponent />
+                </div>
             </div>
-        </div>
         </div>
     );
 };

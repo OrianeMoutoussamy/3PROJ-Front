@@ -1,12 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
+import Toast from "../components/common/Toast";
 import "./Navbar.css";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  const isAuthenticated = !!localStorage.getItem("authToken");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -21,12 +25,11 @@ const Navbar: React.FC = () => {
   const handleLogout = async () => {
     try {
       await authService.logout();
-      console.log("✅ Déconnecté avec succès");
-      alert("Vous avez été déconnecté.");
-      navigate("/login");
-    } catch (err) {
-      console.error("❌ Erreur lors de la déconnexion:", err);
-      alert("Erreur lors de la déconnexion");
+      localStorage.removeItem("authToken");
+      setToast({ message: "Vous avez été déconnecté.", type: "success" });
+      navigate("/");
+    } catch {
+      setToast({ message: "Erreur lors de la déconnexion", type: "error" });
     }
   };
 
@@ -52,17 +55,33 @@ const Navbar: React.FC = () => {
 
         {menuOpen && (
           <div className="profile-menu">
-            <p className="profile-name">MonPseudo</p>
-            <hr />
-            <Link to="/login" className="profile-item">Se connecter</Link>
-            <Link to="/register" className="profile-item">Créer un compte</Link>
-            <Link to="/settings" className="profile-item">Paramètres</Link>
-            <button onClick={handleLogout} className="profile-item logout">
-              Se déconnecter
-            </button>
+            {isAuthenticated ? (
+              <>
+                <p className="profile-name">MonPseudo</p>
+                <hr />
+                <Link to="/settings" className="profile-item">Paramètres</Link>
+                <button onClick={handleLogout} className="profile-item logout">
+                  Se déconnecter
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="profile-item">Se connecter</Link>
+                <Link to="/register" className="profile-item">Créer un compte</Link>
+              </>
+            )}
           </div>
         )}
       </div>
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </nav>
   );
 };
