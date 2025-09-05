@@ -6,24 +6,48 @@ import "./Playlist.css";
 const Playlist: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [playlist, setPlaylist] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-  if (id) {
-    playlistService.getPlaylistById(Number(id)).then((data) => {
-      setPlaylist(data);
-    });
-  }
-}, [id]);
+    const loadPlaylist = async () => {
+      if (!id) return;
 
+      setLoading(true);
+      setError(null);
+
+      try {
+        const data = await playlistService.getPlaylistById(Number(id));
+        setPlaylist(data);
+      } catch (err) {
+        console.error("Erreur lors du chargement de la playlist", err);
+        setError("Impossible de charger la playlist");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPlaylist();
+  }, [id]);
+
+  if (loading) {
+    return <p>Chargement de la playlist...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   if (!playlist) {
-    return <p>Chargement de la playlist...</p>;
+    return <p>Aucune playlist trouvée</p>;
   }
 
   return (
     <div className="playlist-page">
       <h2>{playlist.name}</h2>
-      <p>Créée le : {new Date(playlist.createdAt!).toLocaleDateString()}</p>
+      {playlist.createdAt && (
+        <p>Créée le : {new Date(playlist.createdAt).toLocaleDateString()}</p>
+      )}
       <ul className="video-list">
         {playlist.videos?.map((video: any) => (
           <li key={video.id} className="video-item">

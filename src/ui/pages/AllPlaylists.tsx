@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { playlistService } from "../../services/playlistService";
 import { channelService } from "../../services/channelService";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Edit2, Check } from "lucide-react";
 import "./AllPlaylists.css";
 
 const AllPlaylists: React.FC = () => {
@@ -10,15 +10,15 @@ const AllPlaylists: React.FC = () => {
   const [newName, setNewName] = useState("");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [selfChannelId, setSelfChannelId] = useState<number | null>(null);
+  const [editingPlaylist, setEditingPlaylist] = useState<number | null>(null);
+  const [editingName, setEditingName] = useState("");
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Récupérer le channel de l'utilisateur
         const selfChannel = await channelService.getSelf();
         setSelfChannelId(selfChannel.id);
 
-        // Récupérer playlists
         const data = await playlistService.getSelfPlaylists();
         setPlaylists(data);
       } catch (err) {
@@ -41,7 +41,6 @@ const AllPlaylists: React.FC = () => {
       setNewName("");
       setToast({ message: "Playlist créée avec succès", type: "success" });
 
-      // Recharger playlists
       const data = await playlistService.getSelfPlaylists();
       setPlaylists(data);
     } catch (err) {
@@ -53,11 +52,28 @@ const AllPlaylists: React.FC = () => {
     try {
       await playlistService.deletePlaylist(id);
       setToast({ message: "Playlist supprimée", type: "success" });
-
-      // Recharger playlists
       setPlaylists(playlists.filter(p => p.id !== id));
     } catch (err) {
       setToast({ message: "Erreur lors de la suppression", type: "error" });
+    }
+  };
+
+  const handleEdit = (playlist: any) => {
+    setEditingPlaylist(playlist.id);
+    setEditingName(playlist.name);
+  };
+
+  const handleUpdate = async (id: number) => {
+    if (!editingName.trim()) return;
+
+    try {
+      const updated = await playlistService.updatePlaylist(id, { name: editingName.trim() });
+      setPlaylists(playlists.map(p => (p.id === id ? updated : p)));
+      setEditingPlaylist(null);
+      setEditingName("");
+      setToast({ message: "Playlist mise à jour", type: "success" });
+    } catch (err) {
+      setToast({ message: "Erreur lors de la mise à jour", type: "error" });
     }
   };
 
@@ -81,15 +97,44 @@ const AllPlaylists: React.FC = () => {
       <ul className="all-playlists-list">
         {playlists.map((playlist) => (
           <li key={playlist.id} className="playlist-line">
-            <Link to={`/playlist/${playlist.id}`} className="playlist-name">
-              {playlist.name}
-            </Link>
-            <button
-              className="playlist-delete-btn"
-              onClick={() => handleDelete(playlist.id)}
-            >
-              <X size={14} />
-            </button>
+            {editingPlaylist === playlist.id ? (
+              <>
+                <input
+                  type="text"
+                  className="playlist-edit-input"
+                  value={editingName}
+                  onChange={(e) => setEditingName(e.target.value)}
+                />
+                <div className="playlist-actions">
+                  <button
+                    onClick={() => handleUpdate(playlist.id)}
+                    className="playlist-edit-confirm-btn"
+                  >
+                    <Check size={16} />
+                  </button>
+                  <button
+                    onClick={() => setEditingPlaylist(null)}
+                    className="playlist-edit-cancel-btn"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link to={`/playlist/${playlist.id}`} className="playlist-name">
+                  {playlist.name}
+                </Link>
+                <div className="playlist-actions">
+                  <button onClick={() => handleEdit(playlist)}>
+                    <Edit2 size={16} />
+                  </button>
+                  <button onClick={() => handleDelete(playlist.id)}>
+                    <X size={16} />
+                  </button>
+                </div>
+              </>
+            )}
           </li>
         ))}
       </ul>

@@ -43,7 +43,13 @@ export const playlistService = {
   },
 
   deletePlaylist: async (id: string | number): Promise<void> => {
-    const headers = getAuthHeaders();
-    await apiClient.delete<void>(`/v1/playlist/${id}`, headers);
-  },
+    const token = sessionStorage.getItem("authToken");
+    if (!token) throw new Error("No auth token");
+
+    await apiClient.delete<void>(`/v1/playlist/${id}`, {
+      headers: { Token: token },
+    });
+  }
+
+
 };
