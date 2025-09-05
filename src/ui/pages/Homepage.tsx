@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SectionTitle from "../components/texts/SectionTitle";
 import VideoCardGrid from "../components/videos/VideoCardGrid";
-import { videoServiceMock } from "../../services/videoService";
+import { videoService } from "../../services/videoService";
 import "./Home.css";
 
 const Home: React.FC = () => {
@@ -12,8 +12,8 @@ const Home: React.FC = () => {
     const fetchVideos = async () => {
       try {
         const allVideos = await Promise.all([
-          videoServiceMock.getById(1),
-          videoServiceMock.getById(2),
+          videoService.getById(1),
+          videoService.getById(2),
         ]);
 
         setRecommendedVideos([allVideos[0]]);

@@ -7,7 +7,10 @@ interface VideoCardGridProps {
 }
 
 const VideoCardGrid: React.FC<VideoCardGridProps> = ({ video }) => {
-  const channel = video.channel;
+  const channel = video?.channel;
+
+  // Si channel n'existe pas encore, on affiche un loader ou rien
+  if (!channel) return <div className="video-card-grid w-full">Chargement...</div>;
 
   return (
     <div className="video-card-grid w-full">

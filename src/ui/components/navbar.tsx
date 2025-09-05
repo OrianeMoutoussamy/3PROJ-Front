@@ -1,16 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
+import { channelService } from "../../services/channelService";
 import Toast from "../components/common/Toast";
 import "./Navbar.css";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [channel, setChannel] = useState<any | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const isAuthenticated = !!localStorage.getItem("authToken");
+  const isAuthenticated = !!sessionStorage.getItem("authToken");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -22,15 +24,41 @@ const Navbar: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      channelService.getSelf()
+        .then((res) => setChannel(res))
+        .catch(() => {
+          setToast({ message: "Impossible de récupérer le profil", type: "error" });
+        });
+    } else {
+      setChannel(null);
+    }
+  }, [isAuthenticated]);
+
   const handleLogout = async () => {
     try {
       await authService.logout();
-      localStorage.removeItem("authToken");
+      sessionStorage.removeItem("authToken");
+      setChannel(null);
       setToast({ message: "Vous avez été déconnecté.", type: "success" });
       navigate("/");
     } catch {
       setToast({ message: "Erreur lors de la déconnexion", type: "error" });
     }
+  };
+
+  const renderProfileCircle = () => {
+    if (!isAuthenticated) {
+      return <img src="/no_profile_pic.png" alt="No Profile" className="profile-img" />;
+    }
+
+    if (channel?.profilePicture && channel.profilePicture.trim() !== "") {
+      return <img src={channel.profilePicture} alt="Profil" className="profile-img" />;
+    }
+
+    const initials = channel?.username?.slice(0, 2).toUpperCase() ?? "U";
+    return <span className="profile-initial">{initials}</span>;
   };
 
   return (
@@ -50,15 +78,20 @@ const Navbar: React.FC = () => {
           className="profile-circle"
           onClick={() => setMenuOpen((prev) => !prev)}
         >
-          <span className="profile-initial">U</span>
+          {renderProfileCircle()}
         </div>
 
         {menuOpen && (
           <div className="profile-menu">
             {isAuthenticated ? (
               <>
-                <p className="profile-name">MonPseudo</p>
+                <p className="profile-name">{channel?.username ?? "Utilisateur"}</p>
                 <hr />
+                {channel?.username && (
+                  <Link to={`/channel/${channel.username}`} className="profile-item">
+                    Ma chaîne
+                  </Link>
+                )}
                 <Link to="/settings" className="profile-item">Paramètres</Link>
                 <button onClick={handleLogout} className="profile-item logout">
                   Se déconnecter
@@ -74,7 +107,6 @@ const Navbar: React.FC = () => {
         )}
       </div>
 
-      {/* Toast */}
       {toast && (
         <Toast
           message={toast.message}

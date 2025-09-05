@@ -24,9 +24,8 @@ const Register: React.FC = () => {
     }
     setLoading(true);
     try {
-      const res = await authService.register({ email, password });
-      localStorage.setItem("authToken", res.token);
-      setToast({ message: "Compte créé avec succès !", type: "success" });
+      await authService.register({ email, password });
+      setToast({ message: "Compte créé avec succès", type: "success" });
       setTimeout(() => navigate("/login"), 1000);
     } catch {
       setToast({ message: "Erreur lors de l'inscription", type: "error" });

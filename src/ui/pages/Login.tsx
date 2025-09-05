@@ -18,9 +18,8 @@ const Login: React.FC = () => {
   e.preventDefault();
   setLoading(true);
   try {
-    const res = await authService.login({ email, password });
-    localStorage.setItem("authToken", res.token);
-    setToast({ message: "Connexion réussie !", type: "success" });
+    await authService.login({ email, password });
+    setToast({ message: "Connexion réussie", type: "success" });
     setTimeout(() => navigate("/"), 1000);
   } catch {
     setToast({ message: "Erreur lors de la connexion", type: "error" });

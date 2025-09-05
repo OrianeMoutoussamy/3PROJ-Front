@@ -9,7 +9,7 @@ const MainLayout: React.FC = () => {
     const location = useLocation();
     const shouldDisplayLayout = !hiddenRoutes.includes(location.pathname);
 
-    const isAuthenticated = !!localStorage.getItem("authToken");
+    const isAuthenticated = !!sessionStorage.getItem("authToken");
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>

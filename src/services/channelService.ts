@@ -1,55 +1,51 @@
-// services/channelService.ts
 import { Channel } from "../models/channels/Channel";
-// import { apiClient } from "./apiClient";
+import { apiClient } from "./apiClient";
 
-// export const channelService = {
-//   getSelf: () => apiClient.get<Channel>("/v1/channel"),
-//   getById: (id: string | number) => apiClient.get<Channel>(`/v1/channel/${id}`),
-//   getSubscribedChannels: () => apiClient.get<Channel[]>("/v1/channel/subscribed"),
-//   updateChannel: (body: Partial<Channel>) => apiClient.put<Channel>("/v1/channel", body),
-//   deleteChannel: () => apiClient.delete<void>("/v1/channel"),
-//   subscribe: (id: string | number) => apiClient.post<void>(`/v1/channel/s/${id}`),
-//   unsubscribe: (id: string | number) => apiClient.delete<void>(`/v1/channel/u/${id}`),
-// };
+const getAuthHeaders = () => {
+  const token = sessionStorage.getItem("authToken");
+  return token ? { headers: { Token: token } } : {};
+};
 
-// MOCK
-const mockChannels: Channel[] = [
-  {
-    id: 1,
-    user: { id: 1, email: "dev@example.com"},
-    profilePicture: "/default-avatar.png",
-    username: "CodeBeats",
-    description: "Chaîne dédiée au dev et à la musique 🎵",
-    createdAt: new Date("2024-06-01").toISOString(),
-    updatedAt: new Date().toISOString(),
+export const channelService = {
+  getSelf: async (): Promise<Channel> => {
+    const headers = getAuthHeaders();
+    const res = await apiClient.get<Channel>("/v1/channel", headers);
+    return res;
   },
-  {
-    id: 2,
-    user: { id: 2, email: "js@example.com"},
-    profilePicture: "/default-avatar.png",
-    username: "Fireship",
-    description: "Des vidéos rapides sur le développement web 🔥",
-    createdAt: new Date("2024-07-10").toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
 
-export const channelServiceMock = {
-  getSelf: async () => mockChannels[0],
-  getById: async (id: string | number) =>
-    mockChannels.find((ch) => ch.id === Number(id)) || null,
-  getByUsername: async (username: string) =>
-    mockChannels.find((ch) => ch.username === username) || null, // <<< ici pour résoudre username -> id
-  getSubscribedChannels: async () => mockChannels,
-  updateChannel: async (body: Partial<Channel>) => ({
-    ...mockChannels[0],
-    ...body,
-  }),
-  deleteChannel: async () => {},
-  subscribe: async (id: string | number) => {
-    console.log(`Mock: Subscribed to channel ${id}`);
+  getById: async (id: string | number): Promise<Channel> => {
+    const headers = getAuthHeaders();
+    const res = await apiClient.get<Channel>(`/v1/channel/${id}`, headers);
+    return res;
   },
-  unsubscribe: async (id: string | number) => {
-    console.log(`Mock: Unsubscribed from channel ${id}`);
+
+  getSubscribedChannels: async (): Promise<Channel[]> => {
+    const headers = getAuthHeaders();
+    const res = await apiClient.get<Channel[]>("/v1/channel/subscribed", headers);
+    return res;
+  },
+
+  updateChannel: async (body: Partial<Channel>): Promise<Channel> => {
+    const headers = getAuthHeaders();
+    const res = await apiClient.put<Channel>("/v1/channel", body, headers);
+    return res;
+  },
+
+  deleteChannel: async (): Promise<void> => {
+    const headers = getAuthHeaders();
+    const res = await apiClient.delete<void>("/v1/channel", headers);
+    return res;
+  },
+
+  subscribe: async (id: string | number): Promise<void> => {
+    const headers = getAuthHeaders();
+    const res = await apiClient.post<void>(`/v1/channel/s/${id}`, null, headers);
+    return res;
+  },
+
+  unsubscribe: async (id: string | number): Promise<void> => {
+    const headers = getAuthHeaders();
+    const res = await apiClient.delete<void>(`/v1/channel/u/${id}`, headers);
+    return res;
   },
 };
